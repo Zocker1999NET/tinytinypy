@@ -12,10 +12,29 @@ import xdg.BaseDirectory
 
 APP_NAME = "tinytinypy" # For default config directories
 
-# Helpers
-def jsonToObj(cls, dataDict):
-    transDict = cls.TRANS
-    return cls(**{transDict.get(key, key): val for key, val in dataDict.items() if transDict.get(key, key) is not None})
+# Helper Class
+
+class JsonClass:
+    TRANS_EXP = {
+        "same_key": True,
+        "class_key": "json_key",
+        "ignore_class_key": None,
+    }
+    @classmethod
+    def getClassKey(cls, jsonKey):
+        for key, val in cls.TRANS.items():
+            if val == jsonKey or (key == jsonKey and val == True):
+                return key
+        return None
+    @classmethod
+    def getJsonKey(cls, classKey):
+        val = cls.TRANS.get(classKey, None)
+        return classKey if val == True else val
+    @classmethod
+    def fromJson(cls, dataDict):
+        return cls(**{cls.getClassKey(key): val for key, val in dataDict.items() if cls.getClassKey(key) is not None and val is not None})
+    def toJson(self):
+        return {self.__class__.getJsonKey(key): val for key, val in self.__dict__.items() if self.__class__.getJsonKey(key) is not None and val is not None}
 
 # Class Invalid
 class TtRssCounters:
@@ -25,29 +44,28 @@ class TtRssCounters:
         self.categories = categories
         self.tags = tags
 
-class Category:
+class Category(JsonClass):
     TRANS = {
-        "id": "catId",
-        "order_id": "orderId",
+        "catId": "id",
+        "title": True,
+        "unread": True,
+        "orderId": "order_id",
     }
     def __init__(self, catId, title=None, unread=None, orderId=None):
         self.catId = catId
         self.title = title
         self.unread = unread
         self.orderId = orderId
-    @classmethod
-    def fromJson(cls, jsonData):
-        #return cls(**jsonToInput(cls.TRANS, jsonData))
-        return jsonToObj(cls, jsonData)
 
-class Feed:
+class Feed(JsonClass):
     TRANS = {
-        "id": "feedId",
-        "feed_url": "url",
-        "cat_id": "catId",
-        "last_updated": "lastUpdated",
-        "order_id": "orderId",
-        "has_icon": None,
+        "feedId": "id",
+        "title": True,
+        "url": True,
+        "catId": "cat_id",
+        "unread": True,
+        "lastUpdated": "last_updated",
+        "orderId": "order_id",
     }
     def __init__(self, feedId, title=None, url=None, catId=None, unread=None, lastUpdated=None, orderId=None):
         self.feedId = feedId
@@ -57,22 +75,10 @@ class Feed:
         self.unread = unread
         self.lastUpdated = lastUpdated
         self.orderId = orderId
-    @classmethod
-    def fromJson(cls, jsonData):
-        #return cls(**jsonToInput(cls.TRANS, jsonData))
-        return jsonToObj(cls, jsonData)
-    def toJson(self):
-        #return objToJson(self)
-        pass
 
-class Headline:
-    TRANS = {
-        "id": "headlineId",
+class Headline(JsonClass):
+    OLD_TRANS = { # TODO Add missing values to class
         "guid": None,
-        "is_updated": "isUpdated",
-        "link": "url",
-        "feed_id": "feedId",
-        "feed_title": "feedTitle",
         "comments_count": None,
         "comments_link": None,
         "always_display_attachments": None,
@@ -81,6 +87,22 @@ class Headline:
         "content": None,
         "flavor_image": None,
         "flavor_stream": None,
+    }
+    TRANS = {
+        "headlineId": "id",
+        "unread": True,
+        "marked": True,
+        "published": True,
+        "updated": True,
+        "isUpdated": "is_updated",
+        "title": True,
+        "url": "link",
+        "feedId": "feed_id",
+        "tags": True,
+        "labels": True,
+        "feedTitle": "feed_title",
+        "author": True,
+        "score": True,
     }
     def __init__(self, headlineId, unread, marked, published, updated, isUpdated, title, url, feedId, tags, labels, feedTitle, author, score):
         self.headlineId = headlineId
@@ -97,10 +119,6 @@ class Headline:
         self.feedTitle = feedTitle
         self.author = author
         self.score = score
-    @classmethod
-    def fromJson(cls, jsonData):
-        #return cls(**jsonToInput(cls.TRANS, jsonData))
-        return jsonToObj(cls, jsonData)
 
 class TtRssInstance:
 
@@ -236,7 +254,7 @@ def func_articles(server, args):
         for h in headlines:
             print(h.url)
     else:
-        print(json.dumps([h.objToJson() for h in headlines]))
+        print(json.dumps([h.toJson() for h in headlines]))
 
 def parser_articles(sub):
     p = sub.add_parser('articles', help="Get articles")
