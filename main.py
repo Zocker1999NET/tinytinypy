@@ -10,6 +10,8 @@ import re
 import sys
 import xdg.BaseDirectory
 
+APP_NAME = "tinytinypy" # For default config directories
+
 # Helpers
 def jsonToObj(cls, dataDict):
     transDict = cls.TRANS
@@ -261,7 +263,6 @@ def parse(args):
     return configure_parser().parse_args(args=args)
 
 def main():
-    APP_NAME = "ttrss-cli"
     URL_REGEX = re.compile(r'^(?P<proto>(https?://)?)(?P<host>[^:/ ]+)(:(?P<port>\d+))?(?P<path>.*)$')
     # Retrieve args from config and shell
     storedArgs = sys.argv.copy()
