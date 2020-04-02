@@ -14,6 +14,9 @@ setuptools.setup(
     long_description=long_description,
     url="https://github.com/Zocker1999NET/tinytinypy",
     python_requires='>=3.4',
+    install_requires=[
+        "pyxdg >=0.25",
+    ],
     scripts=[
         "scripts/tinytinypy",
     ],

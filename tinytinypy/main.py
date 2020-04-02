@@ -2,7 +2,6 @@
 
 import http.client
 import json
-import xdg.BaseDirectory
 
 class JsonClass:
     TRANS_EXP = {
