@@ -106,7 +106,7 @@ class Connection:
         self._endpoint = endpoint
         self._sid = None
         self.__conn = protos[proto](host=host)
-        atexit.register(lambda: self.__conn.close())
+        atexit.register(lambda: self.close())
 
     def __raiseError(self, op, info):
         if type(info) == 'dict':
@@ -118,6 +118,17 @@ class Connection:
         else:
             err = info
         raise Exception(f"API Call {op} failed: {info['error']}")
+
+    # For supporting with statement
+    def __enter__(self):
+        return self
+    def __exit__(self, ex_type, value, tb):
+        self.close()
+        return True if ex_type is None else False
+
+    def close(self):
+        self.logout()
+        self.__conn.close()
 
     def _get(self, op, sendSid=True, **parameters):
         headers = {
