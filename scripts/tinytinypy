@@ -47,7 +47,7 @@ def parse(args):
     return configure_parser().parse_args(args=args)
 
 def main():
-    URL_REGEX = re.compile(r'^(?P<proto>(https?://)?)(?P<host>[^:/ ]+)(:(?P<port>\d+))?(?P<path>.*)$')
+    URL_REGEX = re.compile(r'^(?P<proto>[a-z]+://)?(?P<host>[^:/ ]+)(:(?P<port>\d+))?(?P<path>.*)$')
     # Retrieve args from config and shell
     storedArgs = sys.argv.copy()
     storedArgs.pop(0)
@@ -65,11 +65,11 @@ def main():
         raise ValueError("Password is missing!") # TODO make more beautiful for user
     # Parse url
     urlM = URL_REGEX.match(args.url).groupdict()
+    proto = urlM.get('proto') or 'https'
     host = urlM['host']
     # Call api
-    # TODO Support scheme (http / https)
     # TODO Support port
-    server = Connection(host)
+    server = Connection(proto=proto, host=host)
     server.login(args.user, passwd)
     args.func(server, args)
 

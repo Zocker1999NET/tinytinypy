@@ -98,13 +98,14 @@ class Connection:
     }
 
     def __init__(self, proto, host, endpoint="/api/"):
-        if proto not in SUPPORTED_PROTO:
+        protos = self.__class__.SUPPORTED_PROTO
+        if proto not in protos:
             raise ValueError(f"Protocol '{proto}' not supported")
         self._proto = proto
         self._host = host
         self._endpoint = endpoint
         self._sid = None
-        self.__conn = SUPPORTED_PROTO[proto](host=host)
+        self.__conn = protos[proto](host=host)
         atexit.register(lambda: self.__conn.close())
 
     def __raiseError(self, op, info):
