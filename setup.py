@@ -13,7 +13,7 @@ setuptools.setup(
     description="Utility package for using API of Tiny Tiny RSS",
     long_description=long_description,
     url="https://github.com/Zocker1999NET/tinytinypy",
-    python_requires='>=3.4',
+    python_requires='>=3.6',
     install_requires=[
         "pyxdg >=0.25",
     ],
