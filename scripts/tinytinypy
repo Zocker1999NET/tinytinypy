@@ -67,7 +67,7 @@ def main():
     # Call api
     # TODO Support scheme (http / https)
     # TODO Support port
-    server = TtRssInstance(host)
+    server = Connection(host)
     server.login(args.user, passwd)
     args.func(server, args)
 

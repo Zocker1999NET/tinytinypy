@@ -90,7 +90,7 @@ class Headline(JsonClass):
         self.author = author
         self.score = score
 
-class TtRssInstance:
+class Connection:
 
     def __init__(self, host, endpoint="/api/"):
         self._host = host
