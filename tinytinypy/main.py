@@ -92,11 +92,19 @@ class Headline(JsonClass):
 
 class Connection:
 
-    def __init__(self, host, endpoint="/api/"):
+    SUPPORTED_PROTO = {
+        "http": http.client.HTTPConnection,
+        "https": http.client.HTTPSConnection,
+    }
+
+    def __init__(self, proto, host, endpoint="/api/"):
+        if proto not in SUPPORTED_PROTO:
+            raise ValueError(f"Protocol '{proto}' not supported")
+        self._proto = proto
         self._host = host
         self._endpoint = endpoint
         self._sid = None
-        self.__conn = http.client.HTTPSConnection(host)
+        self.__conn = SUPPORTED_PROTO[proto](host=host)
         atexit.register(lambda: self.__conn.close())
 
     def __raiseError(self, op, info):
