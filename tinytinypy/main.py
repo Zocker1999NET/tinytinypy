@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import atexit
 import http.client
 import json
 
