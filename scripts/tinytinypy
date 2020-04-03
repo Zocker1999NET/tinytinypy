@@ -9,6 +9,8 @@ import sys
 
 import xdg.BaseDirectory
 
+from tinytinypy import Connection
+
 APP_NAME = "tinytinypy" # For default config directories
 
 def func_articles(server, args):
