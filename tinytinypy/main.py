@@ -201,7 +201,7 @@ class Connection:
                 return False
             else:
                 self.__raiseError('logout', err)
-        return r['status']['content']['status']
+        return r['content']['status']
 
     def getUnread(self):
         return int(self._getSafe("getUnread")['unread'])
