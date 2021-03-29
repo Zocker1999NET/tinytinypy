@@ -131,7 +131,8 @@ class Connection:
         return True if ex_type is None else False
 
     def close(self):
-        self.logout()
+        if self.isLoggedIn():
+            self.logout()
         self.__conn.close()
 
     def _get(self, op, sendSid=True, **parameters):
