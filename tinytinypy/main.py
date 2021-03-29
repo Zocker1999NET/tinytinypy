@@ -108,7 +108,7 @@ class Connection:
         self._proto = proto
         self._host = host
         self._endpoint = endpoint
-        self._sid = None
+        self.__sid = None
         self.__conn = protos[proto](host=host)
         atexit.register(lambda: self.close())
 
@@ -187,7 +187,7 @@ class Connection:
             err = r['content']['error']
             if err != 'NOT_LOGGED_IN':
                 self.__raiseError('logout', err)
-        self._sid = None
+        self.__sid = None
         return True
 
     def isLoggedIn(self):
