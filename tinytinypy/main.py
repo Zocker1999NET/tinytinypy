@@ -54,7 +54,6 @@ class Headline(JsonClass):
         "always_display_attachments": None,
         "note": None,
         "lang": None,
-        "content": None,
         "flavor_image": None,
         "flavor_stream": None,
     }
@@ -73,8 +72,9 @@ class Headline(JsonClass):
         "feedTitle": "feed_title",
         "author": True,
         "score": True,
+        "content": True,
     }
-    def __init__(self, headlineId, unread, marked, published, updated, isUpdated, title, url, feedId, tags, labels, feedTitle, author, score):
+    def __init__(self, headlineId, unread, marked, published, updated, isUpdated, title, url, feedId, tags, labels, feedTitle, author, score, content=None):
         self.headlineId = headlineId
         self.unread = unread
         self.marked = marked
@@ -89,6 +89,10 @@ class Headline(JsonClass):
         self.feedTitle = feedTitle
         self.author = author
         self.score = score
+        self.content = content
+    @property
+    def has_content():
+        return self.content is not None
 
 class Connection:
 
