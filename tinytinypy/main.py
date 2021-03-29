@@ -239,3 +239,7 @@ class Connection:
             send_feed_id = cat_id
         r = self._getSafe('getHeadlines', feed_id=send_feed_id, limit=limit, skip=skip, show_excerpt=show_excerpt, show_content=show_content, view_mode=view_mode, include_attachments=include_attachments, since_id=since_id, include_nested=nested, order_by=order_by, sanitize=sanitize, force_update=force_update, has_sandbox=has_sandbox)
         return [Headline.fromJson(data) for data in r]
+
+    def getArticle(self, article_id):
+        r = self._getSafe('getArticle', article_id=article_id)
+        return Article.fromJson(r)
