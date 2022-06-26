@@ -3,6 +3,7 @@
 import argparse
 from enum import Enum
 from getpass import getpass
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -18,6 +19,7 @@ APP_NAME = "tinytinypy" # For default config directories
 class OutputMode(Enum):
     # enum values
     JSON = ('json', False)
+    TTS_READY = ('tts-ready', True)
     ONLY_URL = ('only-url', False)
     HEADLINES = ('headlines', False)
     # helpers
@@ -41,6 +43,15 @@ def func_articles(server, args):
     if args.output_mode == OutputMode.ONLY_URL:
         for h in headlines:
             print(h.url)
+    elif args.output_mode == OutputMode.TTS_READY:
+        for h in headlines:
+            if h.content:
+                parser = ContentTTSParser()
+                parser.append_sentence(h.title)
+                parser.feed(h.content)
+                print(parser.extracted)
+            else:
+                print(h.title)
     elif args.output_mode == OutputMode.HEADLINES:
         for h in headlines:
             print(h.title)
