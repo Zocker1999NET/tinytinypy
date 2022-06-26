@@ -151,7 +151,7 @@ class Connection:
 
     def _get(self, op, sendSid=True, **parameters):
         headers = {
-                'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         }
         post_body = {k: v for k, v in parameters.items() if v is not None}
         post_body['op'] = op
