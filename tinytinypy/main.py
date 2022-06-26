@@ -102,6 +102,19 @@ class Connection:
         "https": http.client.HTTPSConnection,
     }
 
+    @staticmethod
+    def _limitExpander(fun, limit=None, skip=None):
+        skip = skip or 0
+        answers = []
+        last_answer = True
+        while last_answer and (limit is None or 0 < limit):
+            last_answer = fun(limit, skip)
+            answers += last_answer
+            if limit is not None:
+                limit -= len(last_answer)
+            skip += len(last_answer)
+        return answers
+
     def __init__(self, proto, host, endpoint="/api/"):
         protos = self.__class__.SUPPORTED_PROTO
         if proto not in protos:
@@ -238,7 +251,9 @@ class Connection:
                 raise Exception("cat_id and feed_id cannot be set both!")
             is_cat = True
             send_feed_id = cat_id
-        r = self._getSafe('getHeadlines', feed_id=send_feed_id, limit=limit, skip=skip, show_excerpt=show_excerpt, show_content=show_content, view_mode=view_mode, include_attachments=include_attachments, since_id=since_id, include_nested=nested, order_by=order_by, sanitize=sanitize, force_update=force_update, has_sandbox=has_sandbox)
+        def req(r_limit, r_skip):
+            return self._getSafe('getHeadlines', feed_id=send_feed_id, is_cat=is_cat, limit=r_limit, skip=r_skip, show_excerpt=show_excerpt, show_content=show_content, view_mode=view_mode, include_attachments=include_attachments, since_id=since_id, include_nested=nested, order_by=order_by, sanitize=sanitize, force_update=force_update, has_sandbox=has_sandbox)
+        r = self._limitExpander(req, limit=limit, skip=skip)
         return [Headline.fromJson(data) for data in r]
 
     def getArticle(self, article_id):
