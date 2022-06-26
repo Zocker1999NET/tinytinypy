@@ -37,7 +37,7 @@ class OutputMode(Enum):
     def __str__(self):
         return self.mode_name
 
-def func_articles(server, args):
+def func_articles(server: Connection, args: argparse.Namespace):
     filtered = {key: value for key, value in args.__dict__.items() if key in ["feed_id", "cat_id", "limit", "skip", "view_mode", "since_id", "include_nested", "order_by"]}
     headlines = server.getHeadlines(show_content=args.output_mode.requires_content, **filtered)
     if args.output_mode == OutputMode.ONLY_URL:
