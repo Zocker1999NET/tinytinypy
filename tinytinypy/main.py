@@ -3,6 +3,7 @@
 import atexit
 import http.client
 import json
+from typing import Dict
 
 from .JsonClass import JsonClass
 
@@ -152,7 +153,7 @@ class Connection:
         ret = json.loads(res.read().decode('utf8'))
         return ret
 
-    def _getSafe(self, op, sendSid=True, **parameters):
+    def _getSafe(self, op, sendSid=True, **parameters) -> Dict:
         r = self._get(op, sendSid=sendSid, **parameters)
         if r['status'] != 0:
             if r['content']['error'] == 'NOT_LOGGED_IN':
