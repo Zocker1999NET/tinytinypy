@@ -1,11 +1,25 @@
 #!/usr/bin/env python3
 
 import atexit
+from enum import IntEnum
 import http.client
 import json
-from typing import Dict
+from typing import Dict, Optional, Sequence
 
 from .JsonClass import JsonClass
+
+
+class UpdateMode(IntEnum):
+    SET_TO_FALSE = 0
+    SET_TO_TRUE = 1
+    TOGGLE = 2
+
+class UpdateField(IntEnum):
+    STARRED = 0
+    PUBLISHED = 1
+    UNREAD = 2
+    ARTICLE_NOTE = 3
+
 
 # Class Invalid
 class TtRssCounters:
@@ -259,3 +273,13 @@ class Connection:
     def getArticle(self, article_id):
         r = self._getSafe('getArticle', article_id=article_id)
         return Article.fromJson(r)
+
+    def updateArticle(self, article_ids: Sequence[int], mode: UpdateMode, field: UpdateField, data: Optional[str] = None) -> int:
+        r = self._getSafe(
+            op='updateArticle',
+            article_ids=",".join(str(i) for i in article_ids),
+            mode=mode.value,
+            field=field.value,
+            data=data,
+        )
+        return r["updated"]

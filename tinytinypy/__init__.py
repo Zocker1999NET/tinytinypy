@@ -1,1 +1,1 @@
-from .main import Connection
+from .main import Connection, UpdateField, UpdateMode
