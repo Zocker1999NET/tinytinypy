@@ -76,6 +76,7 @@ def configure_parser():
     p.add_argument('--limit', dest='limit', type=int, help="Maximum count of articles")
     p.add_argument('--skip', '--offset', dest='skip', type=int, help="Skip this amount of feeds first")
     p.add_argument('--view-mode', '--filter', dest='view_mode', choices=['all_articles', 'unread', 'adaptive', 'marked', 'updated'], default='all_articles', help='Only show articles of certain type')
+    p.add_argument('--order', '--order-by', dest='order_by', choices=['feed_dates', 'date_reverse'], default='date_reverse')
     p.add_argument('--output-mode', dest='output_mode', choices=OutputMode, type=OutputMode.parse_mode, default='json', help='Define how the received articles should be outputed, in most modes except json and *-full modes, one line equals a single article')
     return parser
 
